@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="36dp"
+    android:height="24dp"
+    android:viewportWidth="300"
+    android:viewportHeight="200">
+    <!-- Sky Blue Background -->
+    <path
+        android:fillColor="#509BE6"
+        android:pathData="M0,0h300v200h-300z" />
+    <!-- White Crescent Outer -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M110,100 m-50,0 a50,50 0 1,0 100,0 a50,50 0 1,0 -100,0" />
+    <!-- Blue Crescent Inner Cut -->
+    <path
+        android:fillColor="#509BE6"
+        android:pathData="M125,100 m-40,0 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0" />
+    <!-- White 5-Pointed Star -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M185,100 L195,93 L191,105 L201,112 L189,112 L185,124 L181,112 L169,112 L179,105 L175,93 Z" />
+</vector>

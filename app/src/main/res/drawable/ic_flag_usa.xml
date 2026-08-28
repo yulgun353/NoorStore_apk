@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="36dp"
+    android:height="24dp"
+    android:viewportWidth="300"
+    android:viewportHeight="200">
+    <!-- Red Background / Stripes -->
+    <path
+        android:fillColor="#B22234"
+        android:pathData="M0,0h300v200h-300z" />
+    <!-- White Stripes (6 stripes) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M0,15.38h300v15.38h-300z M0,46.15h300v15.38h-300z M0,76.92h300v15.38h-300z M0,107.69h300v15.38h-300z M0,138.46h300v15.38h-300z M0,169.23h300v15.38h-300z" />
+    <!-- Blue Canton -->
+    <path
+        android:fillColor="#3C3B6E"
+        android:pathData="M0,0h125v107.69h-125z" />
+    <!-- Star Dots (Representative white dots) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,18h6v6h-6z M45,18h6v6h-6z M70,18h6v6h-6z M95,18h6v6h-6z M32.5,36h6v6h-6z M57.5,36h6v6h-6z M82.5,36h6v6h-6z M107.5,36h6v6h-6z M20,54h6v6h-6z M45,54h6v6h-6z M70,54h6v6h-6z M95,54h6v6h-6z M32.5,72h6v6h-6z M57.5,72h6v6h-6z M82.5,72h6v6h-6z M107.5,72h6v6h-6z M20,90h6v6h-6z M45,90h6v6h-6z M70,90h6v6h-6z M95,90h6v6h-6z" />
+</vector>

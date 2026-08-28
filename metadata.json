@@ -1,0 +1,6 @@
+{
+  "name": "نۇرلۇق تېلېفونچىلىقى",
+  "description": "نۇرلۇق تېلېفونچىلىقى - تېلېفون ۋە ھەر خىل پەدلەر دۇكىنى",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
