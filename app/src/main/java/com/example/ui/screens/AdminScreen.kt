@@ -1508,6 +1508,7 @@ fun SettingsTab(
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("ℹ️ " + AppStrings.get("system_info", currentLanguage), fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 Text(AppStrings.get("app_version", currentLanguage) + ": Noor Mobile Super Admin v2.5", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("⚡ Supabase Cloud: yufuhjdmzgehwnypdpba (Active Sync)", fontSize = 12.sp, color = Color(0xFF10B981), fontWeight = FontWeight.SemiBold)
                 Text(AppStrings.get("store_address", currentLanguage), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Text(AppStrings.get("contact_info", currentLanguage) + ": 0995416715 | @sensiz09985", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }

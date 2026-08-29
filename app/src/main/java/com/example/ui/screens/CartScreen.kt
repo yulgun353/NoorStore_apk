@@ -34,6 +34,7 @@ import com.example.ui.language.AppStrings
 import com.example.ui.theme.GoldPrimary
 import com.example.ui.theme.SapphireBlue
 import com.example.data.local.Coupon
+import com.example.ui.components.ProductImageView
 import com.example.ui.viewmodel.CartItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,11 +131,6 @@ fun CartScreen(
                         AppLanguage.ARABIC -> item.product.nameAr
                         AppLanguage.ENGLISH -> item.product.nameEn
                     }
-                    val imageResId = remember(item.product.imageResName, context) {
-                        val id = context.resources.getIdentifier(item.product.imageResName, "drawable", context.packageName)
-                        if (id != 0) id else android.R.drawable.ic_menu_report_image
-                    }
-
                     Card(
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -147,8 +143,8 @@ fun CartScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Image(
-                                painter = painterResource(id = imageResId),
+                            ProductImageView(
+                                imageSource = item.product.imageResName,
                                 contentDescription = pName,
                                 modifier = Modifier
                                     .size(54.dp)
