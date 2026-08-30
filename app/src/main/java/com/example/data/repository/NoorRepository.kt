@@ -389,6 +389,73 @@ class NoorRepository(private val db: NoorDatabase) {
         }
     }
 
+    suspend fun fetchSharedCartFromSupabase(): Map<Int, Int> {
+        try {
+            val response = api.getOrders()
+            if (response.isSuccessful) {
+                val cartOrder = response.body()?.firstOrNull { it.status == "Cart" }
+                if (cartOrder != null && !cartOrder.itemsJson.isNullOrBlank()) {
+                    val map = mutableMapOf<Int, Int>()
+                    val pattern = Regex(""""id"\s*:\s*([0-9]+).*?"qty"\s*:\s*([0-9]+)""")
+                    for (match in pattern.findAll(cartOrder.itemsJson)) {
+                        val pid = match.groupValues[1].toIntOrNull()
+                        val qty = match.groupValues[2].toIntOrNull()
+                        if (pid != null && qty != null) {
+                            map[pid] = qty
+                        }
+                    }
+                    return map
+                }
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("NoorRepository", "fetchSharedCart error: ${e.message}")
+        }
+        return emptyMap()
+    }
+
+    suspend fun syncCartToSupabase(cartItems: List<Pair<ProductEntity, Int>>) {
+        try {
+            val jsonBuilder = StringBuilder("[")
+            cartItems.forEachIndexed { index, pair ->
+                if (index > 0) jsonBuilder.append(",")
+                val product = pair.first
+                val qty = pair.second
+                jsonBuilder.append("""{"id":${product.id},"name":"${product.nameUg}","price":${product.price},"qty":$qty,"image":"${product.imageResName}"}""")
+            }
+            jsonBuilder.append("]")
+            val total = cartItems.sumOf { it.first.price * it.second }
+
+            val response = api.getOrders()
+            val existing = response.body()?.firstOrNull { it.status == "Cart" }
+            if (existing != null && existing.id != null) {
+                api.updateOrderStatus(
+                    idFilter = "eq.${existing.id}",
+                    updates = mapOf(
+                        "items_json" to jsonBuilder.toString(),
+                        "total_price" to total,
+                        "order_date" to System.currentTimeMillis()
+                    )
+                )
+            } else {
+                val nextId = (System.currentTimeMillis() / 1000)
+                api.insertOrder(
+                    order = SupabaseOrderDto(
+                        id = nextId,
+                        customerName = "ئورتاق سىۋەت (Shared Cart)",
+                        customerPhone = "shared_cart",
+                        itemsJson = jsonBuilder.toString(),
+                        totalPrice = total,
+                        orderDate = System.currentTimeMillis(),
+                        status = "Cart",
+                        note = "Shared Cart across Web & Mobile App"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("NoorRepository", "syncCartToSupabase error: ${e.message}")
+        }
+    }
+
     suspend fun seedInitialDataIfEmpty() {
         try {
             val currentCategories = db.categoryDao().getAllCategories().first()

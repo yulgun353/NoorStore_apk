@@ -188,6 +188,20 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
             _isRefreshing.value = true
             try {
                 repository.refreshStoreData()
+                val sharedCartMap = repository.fetchSharedCartFromSupabase()
+                if (sharedCartMap.isNotEmpty()) {
+                    val products = repository.allProducts.first()
+                    val newMap = mutableMapOf<Int, CartItem>()
+                    sharedCartMap.forEach { (pid, qty) ->
+                        val p = products.find { it.id == pid }
+                        if (p != null) {
+                            newMap[pid] = CartItem(p, qty)
+                        }
+                    }
+                    if (newMap.isNotEmpty()) {
+                        _cartMap.value = newMap
+                    }
+                }
                 delay(600)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -246,6 +260,9 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
             current[product.id] = CartItem(product, 1)
         }
         _cartMap.value = current
+        viewModelScope.launch {
+            repository.syncCartToSupabase(current.values.map { Pair(it.product, it.quantity) })
+        }
     }
 
     fun decreaseCartQuantity(productId: Int) {
@@ -257,16 +274,25 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
             current.remove(productId)
         }
         _cartMap.value = current
+        viewModelScope.launch {
+            repository.syncCartToSupabase(current.values.map { Pair(it.product, it.quantity) })
+        }
     }
 
     fun removeFromCart(productId: Int) {
         val current = _cartMap.value.toMutableMap()
         current.remove(productId)
         _cartMap.value = current
+        viewModelScope.launch {
+            repository.syncCartToSupabase(current.values.map { Pair(it.product, it.quantity) })
+        }
     }
 
     fun clearCart() {
         _cartMap.value = emptyMap()
+        viewModelScope.launch {
+            repository.syncCartToSupabase(emptyList())
+        }
     }
 
     // Comparison feature methods
