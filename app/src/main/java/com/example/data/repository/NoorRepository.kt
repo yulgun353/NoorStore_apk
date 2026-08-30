@@ -187,29 +187,30 @@ class NoorRepository(private val db: NoorDatabase) {
 
     suspend fun insertProduct(product: ProductEntity): Long {
         try {
-            val map = mutableMapOf<String, Any>(
-                "name_ug" to product.nameUg,
-                "name_ar" to product.nameAr,
-                "name_en" to product.nameEn,
-                "description_ug" to product.descriptionUg,
-                "description_ar" to product.descriptionAr,
-                "description_en" to product.descriptionEn,
-                "price" to product.price,
-                "original_price" to product.originalPrice,
-                "category_id" to product.categoryId,
-                "brand" to product.brand,
-                "image_res_name" to product.imageResName,
-                "image_res_name2" to product.imageResName2,
-                "image_res_name3" to product.imageResName3,
-                "is_featured" to product.isFeatured,
-                "in_stock" to product.inStock,
-                "specs_ug" to product.specsUg,
-                "specs_ar" to product.specsAr,
-                "specs_en" to product.specsEn,
-                "likes_count" to product.likesCount,
-                "hearts_count" to product.heartsCount
+            val response = api.insertProduct(
+                product = SupabaseNewProductDto(
+                    nameUg = product.nameUg,
+                    nameAr = product.nameAr,
+                    nameEn = product.nameEn,
+                    descriptionUg = product.descriptionUg,
+                    descriptionAr = product.descriptionAr,
+                    descriptionEn = product.descriptionEn,
+                    price = product.price,
+                    originalPrice = product.originalPrice,
+                    categoryId = product.categoryId,
+                    brand = product.brand,
+                    imageResName = product.imageResName,
+                    imageResName2 = product.imageResName2,
+                    imageResName3 = product.imageResName3,
+                    isFeatured = product.isFeatured,
+                    inStock = product.inStock,
+                    specsUg = product.specsUg,
+                    specsAr = product.specsAr,
+                    specsEn = product.specsEn,
+                    likesCount = product.likesCount,
+                    heartsCount = product.heartsCount
+                )
             )
-            val response = api.insertProductMap(map)
             if (response.isSuccessful) {
                 val insertedList = response.body().orEmpty()
                 if (insertedList.isNotEmpty()) {
@@ -270,16 +271,17 @@ class NoorRepository(private val db: NoorDatabase) {
     suspend fun insertOrder(order: OrderEntity): Long {
         val localId = db.orderDao().insertOrder(order)
         try {
-            val orderMap = mapOf<String, Any>(
-                "customer_name" to order.customerName,
-                "customer_phone" to order.customerPhone,
-                "items_json" to order.orderSummary,
-                "total_price" to order.totalAmount,
-                "order_date" to order.orderDate,
-                "status" to order.status,
-                "note" to order.note
+            api.insertOrder(
+                order = SupabaseNewOrderDto(
+                    customerName = order.customerName,
+                    customerPhone = order.customerPhone,
+                    itemsJson = order.orderSummary,
+                    totalPrice = order.totalAmount,
+                    orderDate = order.orderDate,
+                    status = order.status,
+                    note = order.note
+                )
             )
-            api.insertOrderMap(orderMap)
         } catch (e: Exception) {
             android.util.Log.e("NoorRepository", "Supabase insertOrder error: ${e.message}")
         }

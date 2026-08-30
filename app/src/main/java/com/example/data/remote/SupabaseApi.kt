@@ -75,6 +75,41 @@ data class SupabaseCouponDto(
     @Json(name = "desc_en") val descEn: String? = null
 )
 
+@JsonClass(generateAdapter = true)
+data class SupabaseNewProductDto(
+    @Json(name = "name_ug") val nameUg: String? = null,
+    @Json(name = "name_ar") val nameAr: String? = null,
+    @Json(name = "name_en") val nameEn: String? = null,
+    @Json(name = "description_ug") val descriptionUg: String? = null,
+    @Json(name = "description_ar") val descriptionAr: String? = null,
+    @Json(name = "description_en") val descriptionEn: String? = null,
+    @Json(name = "price") val price: Double? = null,
+    @Json(name = "original_price") val originalPrice: Double? = null,
+    @Json(name = "category_id") val categoryId: String? = null,
+    @Json(name = "brand") val brand: String? = null,
+    @Json(name = "image_res_name") val imageResName: String? = null,
+    @Json(name = "image_res_name2") val imageResName2: String? = null,
+    @Json(name = "image_res_name3") val imageResName3: String? = null,
+    @Json(name = "is_featured") val isFeatured: Boolean? = null,
+    @Json(name = "in_stock") val inStock: Boolean? = null,
+    @Json(name = "specs_ug") val specsUg: String? = null,
+    @Json(name = "specs_ar") val specsAr: String? = null,
+    @Json(name = "specs_en") val specsEn: String? = null,
+    @Json(name = "likes_count") val likesCount: Int? = null,
+    @Json(name = "hearts_count") val heartsCount: Int? = null
+)
+
+@JsonClass(generateAdapter = true)
+data class SupabaseNewOrderDto(
+    @Json(name = "customer_name") val customerName: String? = null,
+    @Json(name = "customer_phone") val customerPhone: String? = null,
+    @Json(name = "items_json") val itemsJson: String? = null,
+    @Json(name = "total_price") val totalPrice: Double? = null,
+    @Json(name = "order_date") val orderDate: Long? = null,
+    @Json(name = "status") val status: String? = null,
+    @Json(name = "note") val note: String? = null
+)
+
 interface SupabaseApi {
     @GET("products?select=*&order=id.asc")
     suspend fun getProducts(
@@ -87,15 +122,7 @@ interface SupabaseApi {
         @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
         @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
         @Header("Prefer") prefer: String = "return=representation",
-        @Body product: SupabaseProductDto
-    ): Response<List<SupabaseProductDto>>
-
-    @POST("products")
-    suspend fun insertProductMap(
-        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
-        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
-        @Header("Prefer") prefer: String = "return=representation",
-        @Body product: Map<String, @JvmSuppressWildcards Any>
+        @Body product: SupabaseNewProductDto
     ): Response<List<SupabaseProductDto>>
 
     @PATCH("products")
@@ -125,15 +152,7 @@ interface SupabaseApi {
         @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
         @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
         @Header("Prefer") prefer: String = "return=representation",
-        @Body order: SupabaseOrderDto
-    ): Response<List<SupabaseOrderDto>>
-
-    @POST("orders")
-    suspend fun insertOrderMap(
-        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
-        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
-        @Header("Prefer") prefer: String = "return=representation",
-        @Body order: Map<String, @JvmSuppressWildcards Any>
+        @Body order: SupabaseNewOrderDto
     ): Response<List<SupabaseOrderDto>>
 
     @PATCH("orders")
