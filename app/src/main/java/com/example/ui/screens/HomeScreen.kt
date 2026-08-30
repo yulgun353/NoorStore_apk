@@ -106,15 +106,18 @@ fun HomeScreen(
         if (id != 0) id else android.R.drawable.ic_menu_gallery
     }
 
+    val pullToRefreshState = rememberPullToRefreshState()
+
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
+        state = pullToRefreshState,
         modifier = Modifier
             .fillMaxSize()
             .testTag("home_pull_to_refresh"),
         indicator = {
             PullToRefreshDefaults.Indicator(
-                state = rememberPullToRefreshState(),
+                state = pullToRefreshState,
                 isRefreshing = isRefreshing,
                 color = GoldPrimary,
                 modifier = Modifier.align(Alignment.TopCenter)

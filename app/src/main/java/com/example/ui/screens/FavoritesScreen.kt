@@ -37,15 +37,18 @@ fun FavoritesScreen(
     onHeartClick: (ProductEntity) -> Unit,
     onReviewClick: (ProductEntity) -> Unit
 ) {
+    val pullToRefreshState = rememberPullToRefreshState()
+
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
+        state = pullToRefreshState,
         modifier = Modifier
             .fillMaxSize()
             .testTag("favorites_pull_to_refresh"),
         indicator = {
             PullToRefreshDefaults.Indicator(
-                state = rememberPullToRefreshState(),
+                state = pullToRefreshState,
                 isRefreshing = isRefreshing,
                 color = GoldPrimary,
                 modifier = Modifier.align(Alignment.TopCenter)

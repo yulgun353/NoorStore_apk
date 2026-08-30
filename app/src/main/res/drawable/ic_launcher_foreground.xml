@@ -1,67 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-
-    <!-- Glowing Background Aura behind the device (Safe zone center (54,54)) -->
-    <path
-        android:fillColor="#1538BDF8"
-        android:pathData="M54,28 A26,26 0 1,0 54,80 A26,26 0 1,0 54,28 Z" />
-
-    <!-- Smartphone Outer Bezel (Gold Rim) -->
-    <!-- Center (54, 54), Width: 38 (from 35 to 73), Height: 58 (from 25 to 83), Corner radius: 7 -->
-    <path
-        android:fillColor="#D4AF37"
-        android:pathData="M42,25 L66,25 A7,7 0 0,1 73,32 L73,76 A7,7 0 0,1 66,83 L42,83 A7,7 0 0,1 35,76 L35,32 A7,7 0 0,1 42,25 Z" />
-
-    <!-- Smartphone Inner Bezel (Dark Titanium) -->
-    <path
-        android:fillColor="#1E293B"
-        android:pathData="M43,26.5 L65,26.5 A5.5,5.5 0 0,1 71.5,32 L71.5,76 A5.5,5.5 0 0,1 65,81.5 L43,81.5 A5.5,5.5 0 0,1 37.5,76 L37.5,32 A5.5,5.5 0 0,1 43,26.5 Z" />
-
-    <!-- Phone Screen Display (Vibrant Deep Blue / Sapphire Glass) -->
-    <path
-        android:fillColor="#0A192F"
-        android:pathData="M44,28 L64,28 A4,4 0 0,1 69,32 L69,76 A4,4 0 0,1 64,80 L44,80 A4,4 0 0,1 39,76 L39,32 A4,4 0 0,1 44,28 Z" />
-
-    <!-- Screen Graphic: Luxury Holographic Wave -->
-    <path
-        android:fillColor="#2563EB"
-        android:pathData="M39,52 Q47,46 54,54 T69,50 L69,76 A4,4 0 0,1 64,80 L44,80 A4,4 0 0,1 39,76 Z" />
-    <path
-        android:fillColor="#38BDF8"
-        android:pathData="M39,60 Q48,54 55,62 T69,58 L69,76 A4,4 0 0,1 64,80 L44,80 A4,4 0 0,1 39,76 Z" />
-
-    <!-- Dynamic Island / Camera Notch -->
-    <path
-        android:fillColor="#020617"
-        android:pathData="M50,29.5 L58,29.5 A1.5,1.5 0 0,1 59.5,31 A1.5,1.5 0 0,1 58,32.5 L50,32.5 A1.5,1.5 0 0,1 48.5,31 A1.5,1.5 0 0,1 50,29.5 Z" />
-
-    <!-- Camera Lens Reflection Dot -->
-    <path
-        android:fillColor="#38BDF8"
-        android:pathData="M51.5,31 A0.7,0.7 0 1,0 51.5,31.01 Z" />
-
-    <!-- Home Navigation Pill at Bottom -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M49,76.5 L59,76.5 A0.75,0.75 0 0,1 59.75,77.25 A0.75,0.75 0 0,1 59,78 L49,78 A0.75,0.75 0 0,1 48.25,77.25 A0.75,0.75 0 0,1 49,76.5 Z" />
-
-    <!-- "Noor" / Light Sparkle Star at Top Right of the Phone (Center around 71, 27) -->
-    <!-- 4-point Golden Star -->
-    <path
-        android:fillColor="#FDE047"
-        android:pathData="M71,20 Q71,26 77,26 Q71,26 71,32 Q71,26 65,26 Q71,26 71,20 Z" />
-
-    <!-- Small Secondary Sparkle -->
-    <path
-        android:fillColor="#FFD700"
-        android:pathData="M78,34 Q78,37 81,37 Q78,37 78,40 Q78,37 75,37 Q78,37 78,34 Z" />
-
-    <!-- Small Accent Sparkle Left -->
-    <path
-        android:fillColor="#38BDF8"
-        android:pathData="M31,38 Q31,40 33,40 Q31,40 31,42 Q31,40 29,40 Q31,40 31,38 Z" />
-</vector>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="72dp"
+        android:height="72dp"
+        android:drawable="@drawable/ic_app_foreground_logo_1788034147857"
+        android:gravity="center" />
+</layer-list>
