@@ -1,5 +1,6 @@
 ﻿plugins {
   alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.google.devtools.ksp)
 }
@@ -20,7 +21,6 @@ android {
 
   buildTypes {
     release {
-      isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
@@ -35,10 +35,6 @@ android {
   buildFeatures {
     compose = true
     buildConfig = true
-  }
-  dependenciesInfo {
-    includeInApk = false
-    includeInBundle = true
   }
 }
 
@@ -66,7 +62,6 @@ dependencies {
   implementation(libs.androidx.room.runtime)
   implementation(libs.coil.compose)
   implementation(libs.converter.moshi)
-  implementation(platform(libs.firebase.bom))
   implementation(libs.googleid)
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
