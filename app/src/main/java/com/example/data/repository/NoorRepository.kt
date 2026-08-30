@@ -426,17 +426,14 @@ class NoorRepository(private val db: NoorDatabase) {
             val total = cartItems.sumOf { it.first.price * it.second }
 
             val response = api.getOrders()
-            val existing = response.body()?.firstOrNull { it.status == "Cart" }
-            if (existing != null && existing.id != null) {
-                api.updateOrderStatus(
-                    idFilter = "eq.${existing.id}",
-                    updates = mapOf(
-                        "items_json" to jsonBuilder.toString(),
-                        "total_price" to total,
-                        "order_date" to System.currentTimeMillis()
-                    )
-                )
-            } else {
+            val existingList = response.body()?.filter { it.status == "Cart" }.orEmpty()
+            for (ex in existingList) {
+                if (ex.id != null) {
+                    api.deleteOrder(idFilter = "eq.${ex.id}")
+                }
+            }
+
+            if (cartItems.isNotEmpty()) {
                 val nextId = (System.currentTimeMillis() / 1000)
                 api.insertOrder(
                     order = SupabaseOrderDto(

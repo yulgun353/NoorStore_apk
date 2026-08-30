@@ -613,7 +613,7 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
         try {
             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone"))
             context.startActivity(intent)
-        } catch (_: Exception) {}
+        } catch (e: Exception) {}
     }
 
     fun launchMapLocation(context: Context) {
@@ -663,10 +663,10 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
 
     // Nasheed Player Integration
     val nasheedTracks = listOf(
-        NasheedTrack("1", "كۆك بايراق", "Nashidler/كۆك بايراق.mp3"),
-        NasheedTrack("2", "بالىلىقنى سېغىندىم", "Nashidler/بالىلىقنى  سېغىندىم  54586.mp3"),
-        NasheedTrack("3", "نەشىد 1", "Nashidler/AUD-20230324-WA0008.mp3"),
-        NasheedTrack("4", "نەشىد 2", "Nashidler/AUD-20251226-WA0068.mp3")
+        NasheedTrack("1", "كۆك بايراق", "Nashidler/kok_bayraq.mp3"),
+        NasheedTrack("2", "بالىلىقنى سېغىندىم", "Nashidler/baliliqni_seghindim.mp3"),
+        NasheedTrack("3", "نەشىد 1", "Nashidler/nashid_1.mp3"),
+        NasheedTrack("4", "نەشىد 2", "Nashidler/nashid_2.mp3")
     )
 
     private var mediaPlayer: MediaPlayer? = null
@@ -698,39 +698,36 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
                 try {
                     mediaPlayer?.stop()
                     mediaPlayer?.release()
-                } catch (_: Exception) {}
+                } catch (e: Exception) {}
                 mediaPlayer = null
 
-                val player = MediaPlayer()
-                player.setOnErrorListener { _, what, extra ->
-                    android.util.Log.e("StoreViewModel", "MediaPlayer error: what=$what, extra=$extra")
-                    _isPlayingNasheed.value = false
-                    true
-                }
-                try {
-                    val afd = context.assets.openFd(track.assetPath)
-                    player.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                    afd.close()
-                } catch (e: Exception) {
-                    val tempFile = File(context.cacheDir, "${track.id}.mp3")
-                    if (!tempFile.exists() || tempFile.length() == 0L) {
-                        context.assets.open(track.assetPath).use { input ->
-                            tempFile.outputStream().use { output ->
-                                input.copyTo(output)
-                            }
+                val tempFile = File(context.cacheDir, "track_${track.id}.mp3")
+                if (!tempFile.exists() || tempFile.length() < 1000L) {
+                    context.assets.open(track.assetPath).use { input ->
+                        tempFile.outputStream().use { output ->
+                            input.copyTo(output)
                         }
                     }
-                    player.setDataSource(tempFile.absolutePath)
                 }
-                player.prepare()
-                player.start()
+
+                val player = MediaPlayer()
+                player.setDataSource(tempFile.absolutePath)
+                player.setOnPreparedListener { mp ->
+                    mp.start()
+                    _isPlayingNasheed.value = true
+                }
                 player.setOnCompletionListener {
                     _isPlayingNasheed.value = false
                 }
+                player.setOnErrorListener { _, what, extra ->
+                    android.util.Log.e("StoreViewModel", "MediaPlayer error: $what, $extra")
+                    _isPlayingNasheed.value = false
+                    true
+                }
+                player.prepareAsync()
                 mediaPlayer = player
                 _currentTrack.value = track
-                _isPlayingNasheed.value = true
-                _isNasheedExpanded.value = false // Collapse section after selecting track
+                _isNasheedExpanded.value = false
             } catch (e: Exception) {
                 android.util.Log.e("StoreViewModel", "Error playing nasheed: ${e.message}", e)
                 _isPlayingNasheed.value = false
