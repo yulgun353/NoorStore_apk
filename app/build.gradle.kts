@@ -1,71 +1,69 @@
-﻿plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.compose)
-  alias(libs.plugins.google.devtools.ksp)
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp")
 }
 
 android {
-  namespace = "com.example"
-  compileSdk = 35
+    namespace = "com.example"
+    compileSdk = 35
 
-  defaultConfig {
-    applicationId = "com.aistudio.noorstore.app"
-    minSdk = 24
-    targetSdk = 35
-    versionCode = 1
-    versionName = "1.0"
-  }
+    defaultConfig {
+        applicationId = "com.aistudio.noorstore.app"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
 
-  buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        debug {
+            isDebuggable = true
+        }
     }
-    debug {
-      isDebuggable = true
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  buildFeatures {
-    compose = true
-    buildConfig = true
-  }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
-  implementation(libs.accompanist.permissions)
-  implementation(libs.androidx.activity.compose)
-  implementation(libs.androidx.camera.camera2)
-  implementation(libs.androidx.camera.core)
-  implementation(libs.androidx.camera.lifecycle)
-  implementation(libs.androidx.camera.view)
-  implementation(libs.androidx.compose.ui)
-  implementation(libs.androidx.compose.ui.graphics)
-  implementation(libs.androidx.compose.ui.tooling.preview)
-  implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.datastore.preferences)
-  implementation(libs.androidx.lifecycle.runtime.compose)
-  implementation(libs.androidx.lifecycle.runtime.ktx)
-  implementation(libs.androidx.lifecycle.viewmodel.compose)
-  implementation(libs.androidx.material.icons.extended)
-  implementation(libs.androidx.compose.material3)
-  implementation(libs.androidx.navigation.compose)
-  implementation(libs.androidx.room.ktx)
-  implementation(libs.androidx.room.runtime)
-  implementation(libs.coil.compose)
-  implementation(libs.converter.moshi)
-  implementation(libs.kotlinx.coroutines.android)
-  implementation(libs.kotlinx.coroutines.core)
-  implementation(libs.logging.interceptor)
-  implementation(libs.moshi.kotlin)
-  implementation(libs.okhttp)
-  implementation(libs.retrofit)
-  debugImplementation(libs.androidx.compose.ui.test.manifest)
-  debugImplementation(libs.androidx.compose.ui.tooling)
-  "ksp"(libs.androidx.room.compiler)
-  "ksp"(libs.moshi.kotlin.codegen)
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation("androidx.compose.ui:ui:1.7.5")
+    implementation("androidx.compose.ui:ui-graphics:1.7.5")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.5")
+    implementation("androidx.compose.material3:material3:1.3.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.5")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.5")
 }
