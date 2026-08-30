@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
             Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
                 android.util.Log.e("NoorStore", "Handled uncaught exception: ${throwable.message}", throwable)
             }
-        } catch (_: Exception) {}
+        } catch (e: Exception) {}
 
         enableEdgeToEdge()
 
