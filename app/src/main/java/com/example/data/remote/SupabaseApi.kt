@@ -1,4 +1,4 @@
-﻿package com.example.data.remote
+package com.example.data.remote
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -90,6 +90,14 @@ interface SupabaseApi {
         @Body product: SupabaseProductDto
     ): Response<List<SupabaseProductDto>>
 
+    @POST("products")
+    suspend fun insertProductMap(
+        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
+        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
+        @Header("Prefer") prefer: String = "return=representation",
+        @Body product: Map<String, @JvmSuppressWildcards Any>
+    ): Response<List<SupabaseProductDto>>
+
     @PATCH("products")
     suspend fun updateProduct(
         @Query("id") idFilter: String,
@@ -118,6 +126,14 @@ interface SupabaseApi {
         @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
         @Header("Prefer") prefer: String = "return=representation",
         @Body order: SupabaseOrderDto
+    ): Response<List<SupabaseOrderDto>>
+
+    @POST("orders")
+    suspend fun insertOrderMap(
+        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
+        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
+        @Header("Prefer") prefer: String = "return=representation",
+        @Body order: Map<String, @JvmSuppressWildcards Any>
     ): Response<List<SupabaseOrderDto>>
 
     @PATCH("orders")
