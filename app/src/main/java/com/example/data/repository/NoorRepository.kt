@@ -186,11 +186,10 @@ class NoorRepository(private val db: NoorDatabase) {
     }
 
     suspend fun insertProduct(product: ProductEntity): Long {
-        val id = db.productDao().insertProduct(product)
         try {
-            api.insertProduct(
+            val response = api.insertProduct(
                 product = SupabaseProductDto(
-                    id = if (id > 0) id else null,
+                    id = null,
                     nameUg = product.nameUg,
                     nameAr = product.nameAr,
                     nameEn = product.nameEn,
@@ -213,10 +212,19 @@ class NoorRepository(private val db: NoorDatabase) {
                     heartsCount = product.heartsCount
                 )
             )
+            if (response.isSuccessful) {
+                val insertedList = response.body().orEmpty()
+                if (insertedList.isNotEmpty()) {
+                    val remote = insertedList[0]
+                    val remoteId = remote.id?.toInt() ?: 0
+                    val entityWithRemoteId = product.copy(id = if (remoteId > 0) remoteId else product.id)
+                    return db.productDao().insertProduct(entityWithRemoteId)
+                }
+            }
         } catch (e: Exception) {
             android.util.Log.e("NoorRepository", "Supabase insertProduct error: ${e.message}")
         }
-        return id
+        return db.productDao().insertProduct(product)
     }
 
     suspend fun updateProduct(product: ProductEntity) {
@@ -266,7 +274,7 @@ class NoorRepository(private val db: NoorDatabase) {
         try {
             api.insertOrder(
                 order = SupabaseOrderDto(
-                    id = if (localId > 0) localId else null,
+                    id = null,
                     customerName = order.customerName,
                     customerPhone = order.customerPhone,
                     itemsJson = order.orderSummary,
@@ -291,26 +299,26 @@ class NoorRepository(private val db: NoorDatabase) {
                     for (item in remoteList) {
                         val entity = ProductEntity(
                             id = item.id?.toInt() ?: 0,
-                            nameUg = item.nameUg,
-                            nameAr = item.nameAr,
-                            nameEn = item.nameEn,
-                            descriptionUg = item.descriptionUg,
-                            descriptionAr = item.descriptionAr,
-                            descriptionEn = item.descriptionEn,
-                            price = item.price,
-                            originalPrice = item.originalPrice,
-                            categoryId = item.categoryId,
-                            brand = item.brand,
-                            imageResName = item.imageResName,
-                            imageResName2 = item.imageResName2,
-                            imageResName3 = item.imageResName3,
-                            isFeatured = item.isFeatured,
-                            inStock = item.inStock,
-                            specsUg = item.specsUg,
-                            specsAr = item.specsAr,
-                            specsEn = item.specsEn,
-                            likesCount = item.likesCount,
-                            heartsCount = item.heartsCount
+                            nameUg = item.nameUg ?: "مەھسۇلات",
+                            nameAr = item.nameAr ?: item.nameUg ?: "منتج",
+                            nameEn = item.nameEn ?: item.nameUg ?: "Product",
+                            descriptionUg = item.descriptionUg ?: "",
+                            descriptionAr = item.descriptionAr ?: "",
+                            descriptionEn = item.descriptionEn ?: "",
+                            price = item.price ?: 0.0,
+                            originalPrice = item.originalPrice ?: ((item.price ?: 0.0) * 1.1),
+                            categoryId = item.categoryId ?: "phones",
+                            brand = item.brand ?: "Generic",
+                            imageResName = item.imageResName ?: "img_phones_1786037591338",
+                            imageResName2 = item.imageResName2 ?: "",
+                            imageResName3 = item.imageResName3 ?: "",
+                            isFeatured = item.isFeatured ?: false,
+                            inStock = item.inStock ?: true,
+                            specsUg = item.specsUg ?: "",
+                            specsAr = item.specsAr ?: "",
+                            specsEn = item.specsEn ?: "",
+                            likesCount = item.likesCount ?: 0,
+                            heartsCount = item.heartsCount ?: 0
                         )
                         db.productDao().insertProduct(entity)
                     }
@@ -324,13 +332,13 @@ class NoorRepository(private val db: NoorDatabase) {
                 for (o in remoteOrders) {
                     val orderEntity = OrderEntity(
                         id = o.id?.toInt() ?: 0,
-                        customerName = o.customerName,
-                        customerPhone = o.customerPhone,
-                        orderSummary = o.itemsJson,
-                        totalAmount = o.totalPrice,
-                        orderDate = o.orderDate,
-                        status = o.status,
-                        note = o.note
+                        customerName = o.customerName ?: "خېرىدار",
+                        customerPhone = o.customerPhone ?: "",
+                        orderSummary = o.itemsJson ?: "",
+                        totalAmount = o.totalPrice ?: 0.0,
+                        orderDate = o.orderDate ?: System.currentTimeMillis(),
+                        status = o.status ?: "Pending",
+                        note = o.note ?: ""
                     )
                     db.orderDao().insertOrder(orderEntity)
                 }
@@ -343,12 +351,12 @@ class NoorRepository(private val db: NoorDatabase) {
                 for (r in remoteReviews) {
                     val reviewEntity = ReviewEntity(
                         id = r.id?.toInt() ?: 0,
-                        productId = r.productId.toInt(),
-                        userName = r.userName,
-                        rating = r.rating,
-                        comment = r.comment,
-                        adminReply = r.adminReply,
-                        timestamp = r.timestamp
+                        productId = r.productId?.toInt() ?: 0,
+                        userName = r.userName ?: "خېرىدار",
+                        rating = r.rating ?: 5,
+                        comment = r.comment ?: "",
+                        adminReply = r.adminReply ?: "",
+                        timestamp = r.timestamp ?: System.currentTimeMillis()
                     )
                     db.reviewDao().insertReview(reviewEntity)
                 }
@@ -361,13 +369,13 @@ class NoorRepository(private val db: NoorDatabase) {
                 if (remoteCoupons.isNotEmpty()) {
                     val list = remoteCoupons.map {
                         Coupon(
-                            code = it.code,
-                            discountPercent = it.discountPercent,
-                            discountAmount = it.discountAmount,
-                            minSpend = it.minSpend,
-                            descUg = it.descUg,
-                            descAr = it.descAr,
-                            descEn = it.descEn
+                            code = it.code ?: "",
+                            discountPercent = it.discountPercent ?: 0.0,
+                            discountAmount = it.discountAmount ?: 0.0,
+                            minSpend = it.minSpend ?: 0.0,
+                            descUg = it.descUg ?: "",
+                            descAr = it.descAr ?: "",
+                            descEn = it.descEn ?: ""
                         )
                     }
                     _coupons.value = list

@@ -1,4 +1,4 @@
-package com.example.data.remote
+﻿package com.example.data.remote
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
+import java.util.concurrent.TimeUnit
 
 object SupabaseConfig {
     const val BASE_URL = "https://yufuhjdmzgehwnypdpba.supabase.co/rest/v1/"
@@ -17,61 +18,61 @@ object SupabaseConfig {
 @JsonClass(generateAdapter = true)
 data class SupabaseProductDto(
     @Json(name = "id") val id: Long? = null,
-    @Json(name = "name_ug") val nameUg: String,
-    @Json(name = "name_ar") val nameAr: String = "",
-    @Json(name = "name_en") val nameEn: String = "",
-    @Json(name = "description_ug") val descriptionUg: String = "",
-    @Json(name = "description_ar") val descriptionAr: String = "",
-    @Json(name = "description_en") val descriptionEn: String = "",
-    @Json(name = "price") val price: Double,
-    @Json(name = "original_price") val originalPrice: Double = 0.0,
-    @Json(name = "category_id") val categoryId: String,
-    @Json(name = "brand") val brand: String = "",
-    @Json(name = "image_res_name") val imageResName: String,
-    @Json(name = "image_res_name2") val imageResName2: String = "",
-    @Json(name = "image_res_name3") val imageResName3: String = "",
-    @Json(name = "is_featured") val isFeatured: Boolean = false,
-    @Json(name = "in_stock") val inStock: Boolean = true,
-    @Json(name = "specs_ug") val specsUg: String = "",
-    @Json(name = "specs_ar") val specsAr: String = "",
-    @Json(name = "specs_en") val specsEn: String = "",
-    @Json(name = "likes_count") val likesCount: Int = 0,
-    @Json(name = "hearts_count") val heartsCount: Int = 0
+    @Json(name = "name_ug") val nameUg: String? = null,
+    @Json(name = "name_ar") val nameAr: String? = null,
+    @Json(name = "name_en") val nameEn: String? = null,
+    @Json(name = "description_ug") val descriptionUg: String? = null,
+    @Json(name = "description_ar") val descriptionAr: String? = null,
+    @Json(name = "description_en") val descriptionEn: String? = null,
+    @Json(name = "price") val price: Double? = null,
+    @Json(name = "original_price") val originalPrice: Double? = null,
+    @Json(name = "category_id") val categoryId: String? = null,
+    @Json(name = "brand") val brand: String? = null,
+    @Json(name = "image_res_name") val imageResName: String? = null,
+    @Json(name = "image_res_name2") val imageResName2: String? = null,
+    @Json(name = "image_res_name3") val imageResName3: String? = null,
+    @Json(name = "is_featured") val isFeatured: Boolean? = null,
+    @Json(name = "in_stock") val inStock: Boolean? = null,
+    @Json(name = "specs_ug") val specsUg: String? = null,
+    @Json(name = "specs_ar") val specsAr: String? = null,
+    @Json(name = "specs_en") val specsEn: String? = null,
+    @Json(name = "likes_count") val likesCount: Int? = null,
+    @Json(name = "hearts_count") val heartsCount: Int? = null
 )
 
 @JsonClass(generateAdapter = true)
 data class SupabaseOrderDto(
     @Json(name = "id") val id: Long? = null,
-    @Json(name = "customer_name") val customerName: String,
-    @Json(name = "customer_phone") val customerPhone: String,
-    @Json(name = "items_json") val itemsJson: String,
-    @Json(name = "total_price") val totalPrice: Double,
-    @Json(name = "order_date") val orderDate: Long,
-    @Json(name = "status") val status: String = "pending",
-    @Json(name = "note") val note: String = ""
+    @Json(name = "customer_name") val customerName: String? = null,
+    @Json(name = "customer_phone") val customerPhone: String? = null,
+    @Json(name = "items_json") val itemsJson: String? = null,
+    @Json(name = "total_price") val totalPrice: Double? = null,
+    @Json(name = "order_date") val orderDate: Long? = null,
+    @Json(name = "status") val status: String? = null,
+    @Json(name = "note") val note: String? = null
 )
 
 @JsonClass(generateAdapter = true)
 data class SupabaseReviewDto(
     @Json(name = "id") val id: Long? = null,
-    @Json(name = "product_id") val productId: Long,
-    @Json(name = "user_name") val userName: String,
-    @Json(name = "rating") val rating: Int,
-    @Json(name = "comment") val comment: String,
-    @Json(name = "admin_reply") val adminReply: String = "",
-    @Json(name = "timestamp") val timestamp: Long
+    @Json(name = "product_id") val productId: Long? = null,
+    @Json(name = "user_name") val userName: String? = null,
+    @Json(name = "rating") val rating: Int? = null,
+    @Json(name = "comment") val comment: String? = null,
+    @Json(name = "admin_reply") val adminReply: String? = null,
+    @Json(name = "timestamp") val timestamp: Long? = null
 )
 
 @JsonClass(generateAdapter = true)
 data class SupabaseCouponDto(
     @Json(name = "id") val id: Long? = null,
-    @Json(name = "code") val code: String,
-    @Json(name = "discount_percent") val discountPercent: Double = 0.0,
-    @Json(name = "discount_amount") val discountAmount: Double = 0.0,
-    @Json(name = "min_spend") val minSpend: Double = 0.0,
-    @Json(name = "desc_ug") val descUg: String = "",
-    @Json(name = "desc_ar") val descAr: String = "",
-    @Json(name = "desc_en") val descEn: String = ""
+    @Json(name = "code") val code: String? = null,
+    @Json(name = "discount_percent") val discountPercent: Double? = null,
+    @Json(name = "discount_amount") val discountAmount: Double? = null,
+    @Json(name = "min_spend") val minSpend: Double? = null,
+    @Json(name = "desc_ug") val descUg: String? = null,
+    @Json(name = "desc_ar") val descAr: String? = null,
+    @Json(name = "desc_en") val descEn: String? = null
 )
 
 interface SupabaseApi {
@@ -193,6 +194,10 @@ object SupabaseClient {
     }
 
     private val okHttpClient = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .retryOnConnectionFailure(true)
         .addInterceptor(logging)
         .build()
 
