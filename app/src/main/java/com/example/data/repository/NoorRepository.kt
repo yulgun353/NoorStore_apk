@@ -186,9 +186,11 @@ class NoorRepository(private val db: NoorDatabase) {
     }
 
     suspend fun insertProduct(product: ProductEntity): Long {
+        val nextId = if (product.id > 0) product.id.toLong() else (System.currentTimeMillis() / 1000)
         try {
             val response = api.insertProduct(
-                product = SupabaseNewProductDto(
+                product = SupabaseProductDto(
+                    id = nextId,
                     nameUg = product.nameUg,
                     nameAr = product.nameAr,
                     nameEn = product.nameEn,
@@ -216,14 +218,14 @@ class NoorRepository(private val db: NoorDatabase) {
                 if (insertedList.isNotEmpty()) {
                     val remote = insertedList[0]
                     val remoteId = remote.id?.toInt() ?: 0
-                    val entityWithRemoteId = product.copy(id = if (remoteId > 0) remoteId else product.id)
+                    val entityWithRemoteId = product.copy(id = if (remoteId > 0) remoteId else nextId.toInt())
                     return db.productDao().insertProduct(entityWithRemoteId)
                 }
             }
         } catch (e: Exception) {
             android.util.Log.e("NoorRepository", "Supabase insertProduct error: ${e.message}")
         }
-        return db.productDao().insertProduct(product)
+        return db.productDao().insertProduct(product.copy(id = if (product.id > 0) product.id else nextId.toInt()))
     }
 
     suspend fun updateProduct(product: ProductEntity) {
@@ -269,10 +271,13 @@ class NoorRepository(private val db: NoorDatabase) {
     }
 
     suspend fun insertOrder(order: OrderEntity): Long {
-        val localId = db.orderDao().insertOrder(order)
+        val nextOrderId = if (order.id > 0) order.id.toLong() else (System.currentTimeMillis() / 1000)
+        val entityWithId = order.copy(id = nextOrderId.toInt())
+        val localId = db.orderDao().insertOrder(entityWithId)
         try {
             api.insertOrder(
-                order = SupabaseNewOrderDto(
+                order = SupabaseOrderDto(
+                    id = nextOrderId,
                     customerName = order.customerName,
                     customerPhone = order.customerPhone,
                     itemsJson = order.orderSummary,
