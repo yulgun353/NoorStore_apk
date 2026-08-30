@@ -1,10 +1,7 @@
-﻿import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
-
-plugins {
+﻿plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.google.devtools.ksp)
-  alias(libs.plugins.secrets)
 }
 
 android {
@@ -43,11 +40,6 @@ android {
     includeInApk = false
     includeInBundle = true
   }
-}
-
-secrets {
-  propertiesFileName = ".env"
-  defaultPropertiesFileName = ".env.example"
 }
 
 dependencies {
