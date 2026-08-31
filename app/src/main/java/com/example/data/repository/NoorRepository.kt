@@ -436,9 +436,7 @@ class NoorRepository(private val db: NoorDatabase) {
                     customerName = "ئورتاق سىۋەت (Shared Cart)",
                     customerPhone = "shared_cart",
                     itemsJson = jsonStr,
-                    orderSummary = jsonStr,
                     totalPrice = total,
-                    totalAmount = total,
                     orderDate = System.currentTimeMillis(),
                     status = "Cart",
                     note = "Shared Cart across Web & Mobile App"

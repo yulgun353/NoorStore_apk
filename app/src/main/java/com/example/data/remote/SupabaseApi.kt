@@ -46,9 +46,7 @@ data class SupabaseOrderDto(
     @Json(name = "customer_name") val customerName: String? = null,
     @Json(name = "customer_phone") val customerPhone: String? = null,
     @Json(name = "items_json") val itemsJson: String? = null,
-    @Json(name = "order_summary") val orderSummary: String? = null,
     @Json(name = "total_price") val totalPrice: Double? = null,
-    @Json(name = "total_amount") val totalAmount: Double? = null,
     @Json(name = "order_date") val orderDate: Long? = null,
     @Json(name = "status") val status: String? = null,
     @Json(name = "note") val note: String? = null
