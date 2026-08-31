@@ -421,13 +421,16 @@ class NoorRepository(private val db: NoorDatabase) {
                 if (index > 0) jsonBuilder.append(",")
                 val product = pair.first
                 val qty = pair.second
-                jsonBuilder.append("""{"id":${product.id},"name":"${product.nameUg}","price":${product.price},"qty":$qty,"image":"${product.imageResName}"}""")
+                val safeName = (product.nameUg ?: "مەھسۇلات").replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ").replace("\r", " ")
+                val safeImage = (product.imageResName ?: "").replace("\\", "\\\\").replace("\"", "\\\"")
+                jsonBuilder.append("""{"id":${product.id},"name":"$safeName","price":${product.price},"qty":$qty,"image":"$safeImage"}""")
             }
             jsonBuilder.append("]")
             val total = cartItems.sumOf { it.first.price * it.second }
             val jsonStr = jsonBuilder.toString()
+            android.util.Log.i("NOOR_CART", "Syncing cart to Supabase: $jsonStr")
 
-            api.upsertOrder(
+            val response = api.upsertOrder(
                 order = SupabaseOrderDto(
                     id = 999999L,
                     customerName = "ئورتاق سىۋەت (Shared Cart)",
@@ -441,8 +444,9 @@ class NoorRepository(private val db: NoorDatabase) {
                     note = "Shared Cart across Web & Mobile App"
                 )
             )
+            android.util.Log.i("NOOR_CART", "Upsert cart response code: ${response.code()}")
         } catch (e: Exception) {
-            android.util.Log.e("NoorRepository", "syncCartToSupabase error: ${e.message}")
+            android.util.Log.e("NoorRepository", "syncCartToSupabase error: ${e.message}", e)
         }
     }
 

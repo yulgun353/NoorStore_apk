@@ -685,6 +685,7 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
     }
 
     fun playNasheed(context: Context, track: NasheedTrack) {
+        android.util.Log.i("NOOR_AUDIO", "playNasheed triggered for ${track.title}, resId=${track.rawResId}")
         if (_currentTrack.value?.id == track.id && mediaPlayer != null) {
             if (mediaPlayer?.isPlaying == true) {
                 mediaPlayer?.pause()
@@ -701,24 +702,45 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
                 } catch (e: Exception) {}
                 mediaPlayer = null
 
-                val player = MediaPlayer.create(context, track.rawResId)
-                if (player != null) {
-                    player.setOnCompletionListener {
-                        _isPlayingNasheed.value = false
-                    }
-                    player.setOnErrorListener { _, what, extra ->
-                        android.util.Log.e("StoreViewModel", "MediaPlayer error: $what, $extra")
-                        _isPlayingNasheed.value = false
-                        true
-                    }
-                    player.start()
-                    mediaPlayer = player
-                    _currentTrack.value = track
-                    _isPlayingNasheed.value = true
-                    _isNasheedExpanded.value = false
+                var player: MediaPlayer? = null
+                try {
+                    player = MediaPlayer.create(context, track.rawResId)
+                } catch (e: Exception) {
+                    android.util.Log.e("NOOR_AUDIO", "MediaPlayer.create error: ${e.message}")
                 }
+
+                if (player == null) {
+                    val tempFile = File(context.cacheDir, "nasheed_${track.id}.mp3")
+                    if (!tempFile.exists() || tempFile.length() < 1000L) {
+                        context.resources.openRawResource(track.rawResId).use { input ->
+                            tempFile.outputStream().use { output ->
+                                input.copyTo(output)
+                            }
+                        }
+                    }
+                    player = MediaPlayer().apply {
+                        setDataSource(tempFile.absolutePath)
+                        prepare()
+                    }
+                }
+
+                player.setOnCompletionListener {
+                    _isPlayingNasheed.value = false
+                }
+                player.setOnErrorListener { _, what, extra ->
+                    android.util.Log.e("NOOR_AUDIO", "MediaPlayer error: $what, $extra")
+                    _isPlayingNasheed.value = false
+                    true
+                }
+                player.start()
+                mediaPlayer = player
+                _currentTrack.value = track
+                _isPlayingNasheed.value = true
+                _isNasheedExpanded.value = false
+                android.widget.Toast.makeText(context, "ئاڭلىنىۋاتىدۇ: ${track.title}", android.widget.Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                android.util.Log.e("StoreViewModel", "Error playing nasheed: ${e.message}", e)
+                android.util.Log.e("NOOR_AUDIO", "Fatal audio error: ${e.message}", e)
+                android.widget.Toast.makeText(context, "خاتالىق: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                 _isPlayingNasheed.value = false
             }
         }
