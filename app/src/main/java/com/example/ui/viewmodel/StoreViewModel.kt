@@ -702,15 +702,22 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
                 } catch (e: Exception) {}
                 mediaPlayer = null
 
-                var player: MediaPlayer? = null
+                val player = MediaPlayer()
+                var isInitialized = false
+
                 try {
-                    player = MediaPlayer.create(context, track.rawResId)
+                    val afd = context.resources.openRawResourceFd(track.rawResId)
+                    if (afd != null) {
+                        player.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                        afd.close()
+                        isInitialized = true
+                    }
                 } catch (e: Exception) {
-                    android.util.Log.e("NOOR_AUDIO", "MediaPlayer.create error: ${e.message}")
+                    android.util.Log.w("NOOR_AUDIO", "openRawResourceFd failed: ${e.message}")
                 }
 
-                if (player == null) {
-                    val tempFile = File(context.cacheDir, "nasheed_${track.id}.mp3")
+                if (!isInitialized) {
+                    val tempFile = File(context.cacheDir, "track_${track.id}.mp3")
                     if (!tempFile.exists() || tempFile.length() < 1000L) {
                         context.resources.openRawResource(track.rawResId).use { input ->
                             tempFile.outputStream().use { output ->
@@ -718,26 +725,28 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
                             }
                         }
                     }
-                    player = MediaPlayer().apply {
-                        setDataSource(tempFile.absolutePath)
-                        prepare()
-                    }
+                    val fis = java.io.FileInputStream(tempFile)
+                    player.setDataSource(fis.fd, 0, tempFile.length())
+                    fis.close()
                 }
 
+                player.setOnPreparedListener { mp ->
+                    mp.start()
+                    _isPlayingNasheed.value = true
+                    android.widget.Toast.makeText(context, "ئاڭلىنىۋاتىدۇ: ${track.title} 🔊", android.widget.Toast.LENGTH_SHORT).show()
+                }
                 player.setOnCompletionListener {
                     _isPlayingNasheed.value = false
                 }
                 player.setOnErrorListener { _, what, extra ->
-                    android.util.Log.e("NOOR_AUDIO", "MediaPlayer error: $what, $extra")
+                    android.util.Log.e("NOOR_AUDIO", "MediaPlayer error: what=$what, extra=$extra")
                     _isPlayingNasheed.value = false
                     true
                 }
-                player.start()
+                player.prepareAsync()
                 mediaPlayer = player
                 _currentTrack.value = track
-                _isPlayingNasheed.value = true
                 _isNasheedExpanded.value = false
-                android.widget.Toast.makeText(context, "ئاڭلىنىۋاتىدۇ: ${track.title}", android.widget.Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 android.util.Log.e("NOOR_AUDIO", "Fatal audio error: ${e.message}", e)
                 android.widget.Toast.makeText(context, "خاتالىق: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()

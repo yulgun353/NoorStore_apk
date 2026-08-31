@@ -122,7 +122,7 @@ interface SupabaseApi {
         @Body order: SupabaseOrderDto
     ): Response<List<SupabaseOrderDto>>
 
-    @POST("orders")
+    @POST("orders?on_conflict=id")
     suspend fun upsertOrder(
         @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
         @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
