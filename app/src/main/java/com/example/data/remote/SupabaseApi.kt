@@ -122,6 +122,14 @@ interface SupabaseApi {
         @Body order: SupabaseOrderDto
     ): Response<List<SupabaseOrderDto>>
 
+    @POST("orders")
+    suspend fun upsertOrder(
+        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
+        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
+        @Header("Prefer") prefer: String = "resolution=merge-duplicates,return=representation",
+        @Body order: SupabaseOrderDto
+    ): Response<List<SupabaseOrderDto>>
+
     @PATCH("orders")
     suspend fun updateOrderStatus(
         @Query("id") idFilter: String,

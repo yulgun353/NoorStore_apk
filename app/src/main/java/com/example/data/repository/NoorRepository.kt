@@ -393,11 +393,12 @@ class NoorRepository(private val db: NoorDatabase) {
         try {
             val response = api.getOrders()
             if (response.isSuccessful) {
-                val cartOrder = response.body()?.firstOrNull { it.status == "Cart" }
-                if (cartOrder != null && !cartOrder.itemsJson.isNullOrBlank()) {
+                val cartOrder = response.body()?.firstOrNull { it.id == 999999L || it.status == "Cart" }
+                val jsonStr = cartOrder?.itemsJson ?: cartOrder?.orderSummary
+                if (!jsonStr.isNullOrBlank()) {
                     val map = mutableMapOf<Int, Int>()
                     val pattern = Regex(""""id"\s*:\s*([0-9]+).*?"qty"\s*:\s*([0-9]+)""")
-                    for (match in pattern.findAll(cartOrder.itemsJson)) {
+                    for (match in pattern.findAll(jsonStr)) {
                         val pid = match.groupValues[1].toIntOrNull()
                         val qty = match.groupValues[2].toIntOrNull()
                         if (pid != null && qty != null) {
@@ -424,33 +425,22 @@ class NoorRepository(private val db: NoorDatabase) {
             }
             jsonBuilder.append("]")
             val total = cartItems.sumOf { it.first.price * it.second }
+            val jsonStr = jsonBuilder.toString()
 
-            val response = api.getOrders()
-            val existingList = response.body()?.filter { it.status == "Cart" }.orEmpty()
-            for (ex in existingList) {
-                if (ex.id != null) {
-                    api.deleteOrder(idFilter = "eq.${ex.id}")
-                }
-            }
-
-            if (cartItems.isNotEmpty()) {
-                val nextId = (System.currentTimeMillis() / 1000)
-                val jsonStr = jsonBuilder.toString()
-                api.insertOrder(
-                    order = SupabaseOrderDto(
-                        id = nextId,
-                        customerName = "ئورتاق سىۋەت (Shared Cart)",
-                        customerPhone = "shared_cart",
-                        itemsJson = jsonStr,
-                        orderSummary = jsonStr,
-                        totalPrice = total,
-                        totalAmount = total,
-                        orderDate = System.currentTimeMillis(),
-                        status = "Cart",
-                        note = "Shared Cart across Web & Mobile App"
-                    )
+            api.upsertOrder(
+                order = SupabaseOrderDto(
+                    id = 999999L,
+                    customerName = "ئورتاق سىۋەت (Shared Cart)",
+                    customerPhone = "shared_cart",
+                    itemsJson = jsonStr,
+                    orderSummary = jsonStr,
+                    totalPrice = total,
+                    totalAmount = total,
+                    orderDate = System.currentTimeMillis(),
+                    status = "Cart",
+                    note = "Shared Cart across Web & Mobile App"
                 )
-            }
+            )
         } catch (e: Exception) {
             android.util.Log.e("NoorRepository", "syncCartToSupabase error: ${e.message}")
         }
