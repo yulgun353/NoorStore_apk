@@ -394,7 +394,7 @@ class NoorRepository(private val db: NoorDatabase) {
             val response = api.getOrders()
             if (response.isSuccessful) {
                 val cartOrder = response.body()?.firstOrNull { it.id == 999999L || it.status == "Cart" }
-                val jsonStr = cartOrder?.itemsJson ?: cartOrder?.orderSummary
+                val jsonStr = cartOrder?.itemsJson
                 if (!jsonStr.isNullOrBlank()) {
                     val map = mutableMapOf<Int, Int>()
                     val pattern = Regex(""""id"\s*:\s*([0-9]+).*?"qty"\s*:\s*([0-9]+)""")
