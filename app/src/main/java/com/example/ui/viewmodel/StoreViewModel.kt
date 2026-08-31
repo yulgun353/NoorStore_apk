@@ -22,7 +22,7 @@ import java.io.File
 data class NasheedTrack(
     val id: String,
     val title: String,
-    val assetPath: String
+    val resName: String
 )
 
 enum class Screen {
@@ -663,10 +663,10 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
 
     // Nasheed Player Integration
     val nasheedTracks = listOf(
-        NasheedTrack("1", "كۆك بايراق", "Nashidler/kok_bayraq.mp3"),
-        NasheedTrack("2", "بالىلىقنى سېغىندىم", "Nashidler/baliliqni_seghindim.mp3"),
-        NasheedTrack("3", "نەشىد 1", "Nashidler/nashid_1.mp3"),
-        NasheedTrack("4", "نەشىد 2", "Nashidler/nashid_2.mp3")
+        NasheedTrack("1", "كۆك بايراق", "kok_bayraq"),
+        NasheedTrack("2", "بالىلىقنى سېغىندىم", "baliliqni_seghindim"),
+        NasheedTrack("3", "نەشىد 1", "nashid_1"),
+        NasheedTrack("4", "نەشىد 2", "nashid_2")
     )
 
     private var mediaPlayer: MediaPlayer? = null
@@ -701,33 +701,25 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
                 } catch (e: Exception) {}
                 mediaPlayer = null
 
-                val tempFile = File(context.cacheDir, "track_${track.id}.mp3")
-                if (!tempFile.exists() || tempFile.length() < 1000L) {
-                    context.assets.open(track.assetPath).use { input ->
-                        tempFile.outputStream().use { output ->
-                            input.copyTo(output)
+                val resId = context.resources.getIdentifier(track.resName, "raw", context.packageName)
+                if (resId != 0) {
+                    val player = MediaPlayer.create(context, resId)
+                    if (player != null) {
+                        player.setOnCompletionListener {
+                            _isPlayingNasheed.value = false
                         }
+                        player.setOnErrorListener { _, what, extra ->
+                            android.util.Log.e("StoreViewModel", "MediaPlayer error: $what, $extra")
+                            _isPlayingNasheed.value = false
+                            true
+                        }
+                        player.start()
+                        mediaPlayer = player
+                        _currentTrack.value = track
+                        _isPlayingNasheed.value = true
+                        _isNasheedExpanded.value = false
                     }
                 }
-
-                val player = MediaPlayer()
-                player.setDataSource(tempFile.absolutePath)
-                player.setOnPreparedListener { mp ->
-                    mp.start()
-                    _isPlayingNasheed.value = true
-                }
-                player.setOnCompletionListener {
-                    _isPlayingNasheed.value = false
-                }
-                player.setOnErrorListener { _, what, extra ->
-                    android.util.Log.e("StoreViewModel", "MediaPlayer error: $what, $extra")
-                    _isPlayingNasheed.value = false
-                    true
-                }
-                player.prepareAsync()
-                mediaPlayer = player
-                _currentTrack.value = track
-                _isNasheedExpanded.value = false
             } catch (e: Exception) {
                 android.util.Log.e("StoreViewModel", "Error playing nasheed: ${e.message}", e)
                 _isPlayingNasheed.value = false

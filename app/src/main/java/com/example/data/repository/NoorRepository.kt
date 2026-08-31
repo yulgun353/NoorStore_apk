@@ -435,13 +435,16 @@ class NoorRepository(private val db: NoorDatabase) {
 
             if (cartItems.isNotEmpty()) {
                 val nextId = (System.currentTimeMillis() / 1000)
+                val jsonStr = jsonBuilder.toString()
                 api.insertOrder(
                     order = SupabaseOrderDto(
                         id = nextId,
                         customerName = "ئورتاق سىۋەت (Shared Cart)",
                         customerPhone = "shared_cart",
-                        itemsJson = jsonBuilder.toString(),
+                        itemsJson = jsonStr,
+                        orderSummary = jsonStr,
                         totalPrice = total,
+                        totalAmount = total,
                         orderDate = System.currentTimeMillis(),
                         status = "Cart",
                         note = "Shared Cart across Web & Mobile App"
