@@ -189,7 +189,7 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
 
         // Periodic cloud synchronization
         viewModelScope.launch {
-            while (kotlinx.coroutines.isActive) {
+            while (true) {
                 kotlinx.coroutines.delay(10000)
                 try {
                     repository.syncFromSupabase()
