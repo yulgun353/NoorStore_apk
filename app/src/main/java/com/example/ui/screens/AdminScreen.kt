@@ -254,6 +254,7 @@ fun AdminScreen(
                 // Scrollable Dashboard Tabs
                 val tabTitles = listOf(
                     "📊 " + AppStrings.get("analytics_tab", currentLanguage),
+                    "⚡ ئاپتوماتىك ماس قەدەملەش",
                     "📦 " + AppStrings.get("order_status", currentLanguage) + " (${orders.size})",
                     "📱 " + AppStrings.get("products", currentLanguage) + " (${products.size})",
                     "🎟️ " + AppStrings.get("manage_coupons", currentLanguage) + " (${coupons.size})",
@@ -287,7 +288,7 @@ fun AdminScreen(
         },
         floatingActionButton = {
             when (selectedTab) {
-                2 -> {
+                3 -> {
                     ExtendedFloatingActionButton(
                         onClick = { showAddProductDialog = true },
                         containerColor = GoldPrimary,
@@ -297,7 +298,7 @@ fun AdminScreen(
                         modifier = Modifier.testTag("admin_add_product_fab")
                     )
                 }
-                3 -> {
+                4 -> {
                     ExtendedFloatingActionButton(
                         onClick = { showAddCouponDialog = true },
                         containerColor = GoldPrimary,
@@ -323,14 +324,15 @@ fun AdminScreen(
                     onToggleStock = onToggleStock,
                     onShareReport = onShareSalesReport
                 )
-                1 -> OrdersManagementTab(
+                1 -> AutoSyncTab(currentLanguage = currentLanguage)
+                2 -> OrdersManagementTab(
                     orders = orders,
                     currentLanguage = currentLanguage,
                     onUpdateStatus = onUpdateOrderStatus,
                     onDeleteOrder = onDeleteOrder,
                     onNotifyCustomer = onNotifyCustomer
                 )
-                2 -> ProductsManagementTab(
+                3 -> ProductsManagementTab(
                     products = products,
                     currentLanguage = currentLanguage,
                     onToggleStock = onToggleStock,
@@ -339,19 +341,19 @@ fun AdminScreen(
                     onEditProduct = { editingProduct = it },
                     onDeleteProduct = onDeleteProduct
                 )
-                3 -> CouponsManagementTab(
+                4 -> CouponsManagementTab(
                     coupons = coupons,
                     currentLanguage = currentLanguage,
                     onDeleteCoupon = onDeleteCoupon
                 )
-                4 -> ReviewsModerationTab(
+                5 -> ReviewsModerationTab(
                     reviews = reviews,
                     products = products,
                     currentLanguage = currentLanguage,
                     onReplyReview = onReplyReview,
                     onDeleteReview = onDeleteReview
                 )
-                5 -> SettingsTab(
+                6 -> SettingsTab(
                     currentLanguage = currentLanguage,
                     onOpenChangePin = { showChangePinDialog = true },
                     onLogout = onLogout
@@ -2229,4 +2231,132 @@ fun ChangePinDialog(
             }
         }
     )
+}
+
+@Composable
+fun AutoSyncTab(currentLanguage: AppLanguage) {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        // Main Auto Sync Overview Card
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+        ) {
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(Brush.linearGradient(listOf(GoldPrimary, Color(0xFF10B981))), RoundedCornerShape(12.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.Default.Bolt, contentDescription = null, tint = Color.Black, modifier = Modifier.size(24.dp))
+                        }
+                        Column {
+                            Text("⚡ كۆپ سۇپىلىق ئاپتوماتىك ماس قەدەملەش", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = GoldPrimary)
+                            Text("Telegram ➡️ Supabase ➡️ WhatsApp", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color(0xFF10B981).copy(alpha = 0.15f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF10B981).copy(alpha = 0.3f))
+                    ) {
+                        Text("100% ئاكتىپ", modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
+                    }
+                }
+
+                Divider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
+                // Channels & Groups status
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    // Telegram
+                    Card(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                                Text("✈️ Telegram", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF38BDF8))
+                                Text("✅", fontSize = 11.sp)
+                            }
+                            Text("بوت: @NoorStore520_Bot", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            Text("باشقۇرغۇچى: 7251543464", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+
+                    // WhatsApp
+                    Card(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                                Text("💬 WhatsApp", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
+                                Text("✅", fontSize = 11.sp)
+                            }
+                            Text("خېرىدارلار گۇرۇپپىسى", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            Text("ئاپتوماتىك تارقىتىش ئوچۇق", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+
+                // Web management link
+                Button(
+                    onClick = {
+                        try {
+                            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse("https://yulgun353.github.io/Noor_Store/"))
+                            context.startActivity(intent)
+                        } catch (e: Exception) {}
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0284C7))
+                ) {
+                    Icon(Icons.Default.Language, contentDescription = null, modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("🌐 تور دۇكىنىنى كۆرۈش ۋە مەھسۇلات باشقۇرۇش", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+
+        // Instructions Card
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF10B981).copy(alpha = 0.08f)),
+            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF10B981).copy(alpha = 0.25f))
+        ) {
+            Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("💡 تېلېگرامدىن قانداق يوللايسىز؟", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
+                Text(
+                    "تېلېگرامدىكى مەھسۇلات قانىلى ياكى گۇرۇپپىڭىزغا رەسىم بىلەن بىللە باھاسىنى تاشلاپلا قويسىڭىز، سىستېما بىرلا ۋاقىتتا سۇپابەس، تور بېكەت ۋە ۋاتساپقا تەڭ تارقىتىپ بېرىدۇ!",
+                    fontSize = 11.sp,
+                    lineHeight = 16.sp
+                )
+            }
+        }
+    }
 }
