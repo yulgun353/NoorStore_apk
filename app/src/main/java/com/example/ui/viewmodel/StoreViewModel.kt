@@ -176,9 +176,26 @@ class StoreViewModel(private val repository: NoorRepository) : ViewModel() {
                 e.printStackTrace()
             }
             try {
+                repository.syncFromSupabase()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            try {
                 initAiWelcomeMessage()
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+
+        // Periodic cloud synchronization
+        viewModelScope.launch {
+            while (kotlinx.coroutines.isActive) {
+                kotlinx.coroutines.delay(10000)
+                try {
+                    repository.syncFromSupabase()
+                } catch (e: Exception) {
+                    // silent
+                }
             }
         }
     }
