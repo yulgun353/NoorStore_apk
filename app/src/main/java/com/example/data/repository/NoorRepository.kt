@@ -350,7 +350,9 @@ class NoorRepository(private val db: NoorDatabase) {
             // Sync Reviews from Supabase to Local
             val reviewsResp = api.getReviews()
             if (reviewsResp.isSuccessful) {
-                val remoteReviews = reviewsResp.body().orEmpty()
+                val remoteReviews = reviewsResp.body().orEmpty().filter { 
+                    it.userName != "__ADMIN_PIN__" && it.userName != "__SYNC_STATE__" 
+                }
                 for (r in remoteReviews) {
                     val reviewEntity = ReviewEntity(
                         id = r.id?.toInt() ?: 0,
@@ -632,4 +634,43 @@ class NoorRepository(private val db: NoorDatabase) {
         seedInitialDataIfEmpty()
         syncFromSupabase()
     }
+
+    suspend fun fetchAdminPin(): String {
+        return try {
+            val resp = api.getAdminPin()
+            if (resp.isSuccessful) {
+                val list = resp.body()
+                if (!list.isNullOrEmpty() && !list[0].comment.isNullOrBlank()) {
+                    list[0].comment!!.trim()
+                } else {
+                    "1234"
+                }
+            } else {
+                "1234"
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("NoorRepository", "Failed fetching Admin PIN: ${e.message}")
+            "1234"
+        }
+    }
+
+    suspend fun updateAdminPin(newPin: String): Boolean {
+        return try {
+            val cleanPin = newPin.trim()
+            val dto = SupabaseReviewDto(
+                id = 888888L,
+                productId = 1L,
+                userName = "__ADMIN_PIN__",
+                rating = 5,
+                comment = cleanPin,
+                timestamp = System.currentTimeMillis()
+            )
+            val resp = api.upsertReview(review = dto)
+            resp.isSuccessful
+        } catch (e: Exception) {
+            android.util.Log.e("NoorRepository", "Failed updating Admin PIN in Supabase: ${e.message}")
+            false
+        }
+    }
 }
+

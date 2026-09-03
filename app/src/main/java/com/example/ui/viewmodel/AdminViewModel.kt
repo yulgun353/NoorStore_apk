@@ -25,6 +25,7 @@ import java.util.Locale
 class AdminViewModel(private val repository: NoorRepository) : ViewModel() {
 
     private val _currentAdminPin = MutableStateFlow("1234") // Default PIN
+    val currentAdminPin: StateFlow<String> = _currentAdminPin.asStateFlow()
 
     private val _isLoggedIn = MutableStateFlow(false)
     val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
@@ -37,6 +38,16 @@ class AdminViewModel(private val repository: NoorRepository) : ViewModel() {
 
     private val _successMessage = MutableStateFlow<String?>(null)
     val successMessage: StateFlow<String?> = _successMessage.asStateFlow()
+
+    init {
+        // Fetch global cloud Admin PIN on start
+        viewModelScope.launch {
+            val cloudPin = repository.fetchAdminPin()
+            if (cloudPin.isNotBlank()) {
+                _currentAdminPin.value = cloudPin
+            }
+        }
+    }
 
     val orders: StateFlow<List<OrderEntity>> = repository.allOrders
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -55,11 +66,17 @@ class AdminViewModel(private val repository: NoorRepository) : ViewModel() {
     }
 
     fun login() {
-        if (_pinInput.value.trim() == _currentAdminPin.value) {
-            _isLoggedIn.value = true
-            _errorMessage.value = null
-        } else {
-            _errorMessage.value = "wrong_pin"
+        val input = _pinInput.value.trim()
+        viewModelScope.launch {
+            // Verify against fresh Supabase Cloud PIN
+            val freshCloudPin = repository.fetchAdminPin()
+            _currentAdminPin.value = freshCloudPin
+            if (input == freshCloudPin) {
+                _isLoggedIn.value = true
+                _errorMessage.value = null
+            } else {
+                _errorMessage.value = "wrong_pin"
+            }
         }
     }
 
@@ -74,7 +91,8 @@ class AdminViewModel(private val repository: NoorRepository) : ViewModel() {
         _errorMessage.value = null
         _successMessage.value = null
 
-        if (oldPin.trim() != _currentAdminPin.value) {
+        val currentPin = _currentAdminPin.value
+        if (oldPin.trim() != currentPin) {
             _errorMessage.value = "current_pin_wrong"
             return false
         }
@@ -83,8 +101,14 @@ class AdminViewModel(private val repository: NoorRepository) : ViewModel() {
             return false
         }
 
-        _currentAdminPin.value = newPin.trim()
+        val cleanNewPin = newPin.trim()
+        _currentAdminPin.value = cleanNewPin
         _successMessage.value = "pin_changed_success"
+
+        // Immediately update Supabase Cloud so Website & all devices invalidate old PIN
+        viewModelScope.launch {
+            repository.updateAdminPin(cleanNewPin)
+        }
         return true
     }
 

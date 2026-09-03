@@ -150,11 +150,25 @@ interface SupabaseApi {
         @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}"
     ): Response<List<SupabaseReviewDto>>
 
+    @GET("reviews?user_name=eq.__ADMIN_PIN__&limit=1")
+    suspend fun getAdminPin(
+        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
+        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}"
+    ): Response<List<SupabaseReviewDto>>
+
     @POST("reviews")
     suspend fun insertReview(
         @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
         @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
         @Header("Prefer") prefer: String = "return=representation",
+        @Body review: SupabaseReviewDto
+    ): Response<List<SupabaseReviewDto>>
+
+    @POST("reviews?on_conflict=id")
+    suspend fun upsertReview(
+        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
+        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
+        @Header("Prefer") prefer: String = "resolution=merge-duplicates,return=representation",
         @Body review: SupabaseReviewDto
     ): Response<List<SupabaseReviewDto>>
 
