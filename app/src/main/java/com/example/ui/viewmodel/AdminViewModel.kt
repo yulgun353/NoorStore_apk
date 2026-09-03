@@ -39,6 +39,9 @@ class AdminViewModel(private val repository: NoorRepository) : ViewModel() {
     private val _successMessage = MutableStateFlow<String?>(null)
     val successMessage: StateFlow<String?> = _successMessage.asStateFlow()
 
+    private val _syncStateJson = MutableStateFlow<String?>(null)
+    val syncStateJson: StateFlow<String?> = _syncStateJson.asStateFlow()
+
     init {
         // Fetch global cloud Admin PIN on start
         viewModelScope.launch {
@@ -46,6 +49,35 @@ class AdminViewModel(private val repository: NoorRepository) : ViewModel() {
             if (cloudPin.isNotBlank()) {
                 _currentAdminPin.value = cloudPin
             }
+        }
+        // Poll sync state periodically
+        viewModelScope.launch {
+            while (true) {
+                try {
+                    val json = repository.fetchSyncStateJson()
+                    if (!json.isNullOrBlank()) {
+                        _syncStateJson.value = json
+                    }
+                } catch (e: Exception) {}
+                kotlinx.coroutines.delay(4000)
+            }
+        }
+    }
+
+    fun fetchSyncState() {
+        viewModelScope.launch {
+            val json = repository.fetchSyncStateJson()
+            if (!json.isNullOrBlank()) {
+                _syncStateJson.value = json
+            }
+        }
+    }
+
+    fun sendSyncCommand(commandJson: String) {
+        viewModelScope.launch {
+            repository.sendSyncCommand(commandJson)
+            kotlinx.coroutines.delay(1000)
+            fetchSyncState()
         }
     }
 

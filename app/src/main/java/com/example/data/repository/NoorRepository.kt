@@ -672,5 +672,29 @@ class NoorRepository(private val db: NoorDatabase) {
             false
         }
     }
+
+    suspend fun fetchSyncStateJson(): String? {
+        return try {
+            val resp = api.getSyncState()
+            if (resp.isSuccessful) {
+                val list = resp.body()
+                if (!list.isNullOrEmpty() && !list[0].comment.isNullOrBlank()) {
+                    list[0].comment
+                } else null
+            } else null
+        } catch (e: Exception) {
+            android.util.Log.e("NoorRepository", "Failed fetching Sync State: ${e.message}")
+            null
+        }
+    }
+
+    suspend fun sendSyncCommand(commandJson: String): Boolean {
+        return try {
+            val resp = api.pushSyncCommand(updates = mapOf("admin_reply" to commandJson))
+            resp.isSuccessful
+        } catch (e: Exception) {
+            false
+        }
+    }
 }
 

@@ -156,6 +156,20 @@ interface SupabaseApi {
         @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}"
     ): Response<List<SupabaseReviewDto>>
 
+    @GET("reviews?user_name=eq.__SYNC_STATE__&limit=1")
+    suspend fun getSyncState(
+        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
+        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}"
+    ): Response<List<SupabaseReviewDto>>
+
+    @PATCH("reviews")
+    suspend fun pushSyncCommand(
+        @Query("id") idFilter: String = "eq.999999",
+        @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,
+        @Header("Authorization") auth: String = "Bearer ${SupabaseConfig.API_KEY}",
+        @Body updates: Map<String, @JvmSuppressWildcards Any>
+    ): Response<Unit>
+
     @POST("reviews")
     suspend fun insertReview(
         @Header("apikey") apiKey: String = SupabaseConfig.API_KEY,

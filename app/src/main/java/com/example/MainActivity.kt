@@ -113,6 +113,7 @@ fun NoorStoreApp(
     val adminOrders by adminViewModel.orders.collectAsStateWithLifecycle()
     val adminReviews by adminViewModel.reviews.collectAsStateWithLifecycle()
     val adminCoupons by adminViewModel.coupons.collectAsStateWithLifecycle()
+    val adminSyncStateJson by adminViewModel.syncStateJson.collectAsStateWithLifecycle()
 
     CompositionLocalProvider(LocalLayoutDirection provides currentLanguage.layoutDirection) {
         NoorStoreTheme(appTheme = currentTheme, darkTheme = isDarkMode) {
@@ -320,7 +321,10 @@ fun NoorStoreApp(
                             onShareSalesReport = {
                                 val report = adminViewModel.generateSalesReport(currentLanguage)
                                 adminViewModel.shareSalesReport(context, report)
-                            }
+                            },
+                            syncStateJson = adminSyncStateJson,
+                            onSendSyncCommand = { adminViewModel.sendSyncCommand(it) },
+                            onRefreshSync = { adminViewModel.fetchSyncState() }
                         )
                     }
 
