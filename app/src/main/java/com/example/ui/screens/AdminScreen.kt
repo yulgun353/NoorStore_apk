@@ -2775,9 +2775,11 @@ fun SyncSystemWindowModal(
                                     }
                                 }
                             }
-                        }
                     }
+                }
             }
+        }
+
 
             // 5. Quick Usage Guide Card
             Card(
