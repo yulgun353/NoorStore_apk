@@ -154,14 +154,13 @@ fun ContactScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Box(
+                        Image(
+                            painter = painterResource(id = com.example.R.drawable.ic_telegram_3d),
+                            contentDescription = "Telegram",
                             modifier = Modifier
                                 .size(42.dp)
-                                .background(SapphireBlue.copy(alpha = 0.2f), CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(Icons.Default.Send, contentDescription = "Telegram", tint = SapphireBlue)
-                        }
+                                .clip(RoundedCornerShape(12.dp))
+                        )
                         Column {
                             Text(
                                 text = "Telegram",
@@ -199,14 +198,13 @@ fun ContactScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Box(
+                        Image(
+                            painter = painterResource(id = com.example.R.drawable.ic_whatsapp_3d),
+                            contentDescription = "WhatsApp",
                             modifier = Modifier
                                 .size(42.dp)
-                                .background(Color(0xFF25D366).copy(alpha = 0.2f), CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(Icons.Default.Chat, contentDescription = "WhatsApp", tint = Color(0xFF25D366))
-                        }
+                                .clip(RoundedCornerShape(12.dp))
+                        )
                         Column {
                             Text(
                                 text = "WhatsApp",

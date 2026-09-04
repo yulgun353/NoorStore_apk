@@ -2352,7 +2352,14 @@ fun AutoSyncTab(
                     ) {
                         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                                Text("✈️ Telegram", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF38BDF8))
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Image(
+                                        painter = painterResource(id = com.example.R.drawable.ic_telegram_3d),
+                                        contentDescription = "Telegram",
+                                        modifier = Modifier.size(18.dp).clip(RoundedCornerShape(4.dp))
+                                    )
+                                    Text("Telegram", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF38BDF8))
+                                }
                                 Text("✅", fontSize = 11.sp)
                             }
                             Text("بوت: @NoorStore520_Bot", fontSize = 10.sp, fontWeight = FontWeight.Bold)
@@ -2368,7 +2375,14 @@ fun AutoSyncTab(
                     ) {
                         Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                                Text("💬 WhatsApp", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Image(
+                                        painter = painterResource(id = com.example.R.drawable.ic_whatsapp_3d),
+                                        contentDescription = "WhatsApp",
+                                        modifier = Modifier.size(18.dp).clip(RoundedCornerShape(4.dp))
+                                    )
+                                    Text("WhatsApp", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
+                                }
                                 Text("✅", fontSize = 11.sp)
                             }
                             Text("خېرىدارلار گۇرۇپپىسى", fontSize = 10.sp, fontWeight = FontWeight.Bold)
@@ -2601,7 +2615,14 @@ fun SyncSystemWindowModal(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("✈️ Telegram Bot", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFFF1F5F9))
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Image(
+                                painter = painterResource(id = com.example.R.drawable.ic_telegram_3d),
+                                contentDescription = "Telegram",
+                                modifier = Modifier.size(20.dp).clip(RoundedCornerShape(5.dp))
+                            )
+                            Text("Telegram Bot", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFFF1F5F9))
+                        }
                         Surface(
                             shape = RoundedCornerShape(8.dp),
                             color = Color(0xFF10B981).copy(alpha = 0.2f),
@@ -2654,7 +2675,14 @@ fun SyncSystemWindowModal(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("💬 WhatsApp خېرىدارلار بازىسى", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFFF1F5F9))
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Image(
+                                painter = painterResource(id = com.example.R.drawable.ic_whatsapp_3d),
+                                contentDescription = "WhatsApp",
+                                modifier = Modifier.size(20.dp).clip(RoundedCornerShape(5.dp))
+                            )
+                            Text("WhatsApp خېرىدارلار بازىسى", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color(0xFFF1F5F9))
+                        }
                         val isConnected = whatsappStatus == "CONNECTED"
                         Surface(
                             shape = RoundedCornerShape(8.dp),
