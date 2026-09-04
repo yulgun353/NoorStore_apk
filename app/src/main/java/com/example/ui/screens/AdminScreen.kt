@@ -2675,7 +2675,7 @@ fun SyncSystemWindowModal(
                     if (qrBitmap != null) {
                         Column(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterVertically,
+                            horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text("📱 WhatsApp ئارقىلىق تىزىملىتىش ئۈچۈن QR كودنى سىكاننېرلاڭ:", fontSize = 11.sp, color = Color(0xFFCBD5E1))
